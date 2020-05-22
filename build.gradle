@@ -6,12 +6,17 @@ group 'com.matteoveroni'
 version '1.0-SNAPSHOT'
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/io.javalin/javalin
+    // Logging
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+    // Javalin
     implementation group: 'io.javalin', name: 'javalin', version: '3.8.0'
 
+    // JUnit
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
