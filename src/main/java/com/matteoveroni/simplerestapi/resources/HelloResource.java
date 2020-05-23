@@ -7,7 +7,7 @@ import io.javalin.plugin.openapi.annotations.OpenApi;
 import io.javalin.plugin.openapi.annotations.OpenApiContent;
 import io.javalin.plugin.openapi.annotations.OpenApiResponse;
 
-public class ResourceHello implements Handler {
+public class HelloResource implements Handler {
 
     @OpenApi(
             method = HttpMethod.GET,

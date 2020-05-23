@@ -1,19 +1,14 @@
 package com.matteoveroni.simplerestapi.router;
 
 import com.matteoveroni.simplerestapi.openapi.OpenApiJwtResource;
-import com.matteoveroni.simplerestapi.resources.ResourceRoot;
-import com.matteoveroni.simplerestapi.resources.ResourceHello;
+import com.matteoveroni.simplerestapi.resources.RootResource;
+import com.matteoveroni.simplerestapi.resources.HelloResource;
+import com.matteoveroni.simplerestapi.resources.UserResource;
 import io.javalin.apibuilder.EndpointGroup;
-import io.javalin.plugin.openapi.OpenApiOptions;
 import io.javalin.plugin.openapi.OpenApiPlugin;
-import io.javalin.plugin.openapi.jackson.JacksonModelConverterFactory;
-import io.javalin.plugin.openapi.jackson.JacksonToJsonMapper;
-import io.javalin.plugin.openapi.ui.SwaggerOptions;
-import io.swagger.v3.oas.models.info.Info;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import static io.javalin.apibuilder.ApiBuilder.after;
-import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 @ApplicationScoped
 public class Router implements EndpointGroup {
@@ -25,20 +20,28 @@ public class Router implements EndpointGroup {
     public static final String API = ROOT + "api";
 
     public static final String API_RESOURCE_HELLO = API + "/hello";
+    public static final String API_RESOURCE_USER = API + "/user";
 
     private final OpenApiPlugin openApiPlugin;
 
+    private final HelloResource helloHandler;
+    private final UserResource userHandler;
+
     @Inject
-    public Router(OpenApiPlugin openApiPlugin) {
+    public Router(OpenApiPlugin openApiPlugin, HelloResource helloHandler, UserResource userHandler) {
         this.openApiPlugin = openApiPlugin;
+        this.helloHandler = helloHandler;
+        this.userHandler = userHandler;
     }
 
     @Override
     public void addEndpoints() {
         after(OPENAPI, new OpenApiJwtResource(openApiPlugin));
 
-        get(ROOT, new ResourceRoot());
+        get(ROOT, new RootResource());
 
-        get(API_RESOURCE_HELLO, new ResourceHello());
+        get(API_RESOURCE_HELLO, helloHandler);
+
+        crud(API_RESOURCE_USER + "/:user-id", userHandler);
     }
 }
