@@ -9,7 +9,11 @@ import org.slf4j.LoggerFactory;
 
 public class App {
 
+    public static final String APP_NAME = "SimpleRestApi";
+    public static final String APP_DESCRIPTION = "This is a simple REST API demo using Javalin";
+
     private static final Logger LOG = LoggerFactory.getLogger(App.class);
+
     public static SeContainer CONTAINER;
     public static Event<Object> BUS;
 

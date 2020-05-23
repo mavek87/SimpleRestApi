@@ -1,9 +1,11 @@
 package com.matteoveroni.simplerestapi.server;
 
+import com.google.gson.Gson;
 import com.matteoveroni.simplerestapi.events.EventStartServer;
 import com.matteoveroni.simplerestapi.router.Router;
 import io.javalin.Javalin;
 import io.javalin.http.util.RedirectToLowercasePathPlugin;
+import io.javalin.plugin.json.JavalinJson;
 import io.javalin.plugin.openapi.OpenApiPlugin;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -18,25 +20,23 @@ public class Server {
     private static final int DEFAULT_SERVER_PORT = 8899;
 
     private final Javalin javalin;
-    private final OpenApiPlugin openApiPlugin;
 
     @Inject
-    public Server(Router router) {
-        this.javalin = setupServer(router);
-        this.openApiPlugin = setupOpenApi();
+    public Server(Router router, OpenApiPlugin openApiPlugin, Gson gson) {
+        this.javalin = setupServer(router, openApiPlugin, gson);
     }
 
     public void onEvent(@Observes EventStartServer event) {
         LOG.debug("Server start event received");
         if (event.getServerPort().isPresent()) {
-            this.start(event.getServerPort().get());
+            start(event.getServerPort().get());
         } else {
-            this.start();
+            start();
         }
     }
 
     public void start() {
-        this.start(DEFAULT_SERVER_PORT);
+        start(DEFAULT_SERVER_PORT);
     }
 
     public void start(int port) {
@@ -44,19 +44,16 @@ public class Server {
         javalin.start(port);
     }
 
-    private Javalin setupServer(Router router) {
+    private Javalin setupServer(Router router, OpenApiPlugin openApiPlugin, Gson gson) {
+        JavalinJson.setFromJsonMapper(gson::fromJson);
+        JavalinJson.setToJsonMapper(gson::toJson);
+
         return Javalin
                 .create(config -> {
                     config.registerPlugin(new RedirectToLowercasePathPlugin());
-                    // config.registerPlugin(openApiPlugin);
+                    config.registerPlugin(openApiPlugin);
                     config.defaultContentType = "application/json";
                 })
                 .routes(router);
-    }
-
-
-    private OpenApiPlugin setupOpenApi() {
-        OpenApiPlugin openApiPlugin = null;
-        return openApiPlugin;
     }
 }
