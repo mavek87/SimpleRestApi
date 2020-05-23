@@ -21,11 +21,11 @@ wrapper {
 
 group 'com.matteoveroni'
 
-//scmVersion {
-//    tag {
-//        prefix = project.name
-//    }
-//}
+scmVersion {
+    tag {
+        prefix = project.name
+    }
+}
 project.version = scmVersion.version
 
 repositories {
