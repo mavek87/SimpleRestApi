@@ -3,7 +3,7 @@ package com.matteoveroni.simplerestapi.router;
 import com.matteoveroni.simplerestapi.openapi.OpenApiJwtResource;
 import com.matteoveroni.simplerestapi.resources.RootResource;
 import com.matteoveroni.simplerestapi.resources.HelloResource;
-import com.matteoveroni.simplerestapi.resources.UserResource;
+import com.matteoveroni.simplerestapi.resources.UsersResource;
 import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.plugin.openapi.OpenApiPlugin;
 import javax.enterprise.context.ApplicationScoped;
@@ -20,15 +20,15 @@ public class Router implements EndpointGroup {
     public static final String API = ROOT + "api";
 
     public static final String API_RESOURCE_HELLO = API + "/hello";
-    public static final String API_RESOURCE_USER = API + "/user";
+    public static final String API_RESOURCE_USERS = API + "/users";
 
     private final OpenApiPlugin openApiPlugin;
 
     private final HelloResource helloHandler;
-    private final UserResource userHandler;
+    private final UsersResource userHandler;
 
     @Inject
-    public Router(OpenApiPlugin openApiPlugin, HelloResource helloHandler, UserResource userHandler) {
+    public Router(OpenApiPlugin openApiPlugin, HelloResource helloHandler, UsersResource userHandler) {
         this.openApiPlugin = openApiPlugin;
         this.helloHandler = helloHandler;
         this.userHandler = userHandler;
@@ -42,6 +42,6 @@ public class Router implements EndpointGroup {
 
         get(API_RESOURCE_HELLO, helloHandler);
 
-        crud(API_RESOURCE_USER + "/:user-id", userHandler);
+        crud(API_RESOURCE_USERS + "/:user-id", userHandler);
     }
 }

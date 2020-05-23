@@ -29,7 +29,7 @@ public class MemoryVolatileUserRepository implements UserRepository {
 
     @Override
     public Optional<User> deleteUser(UUID userId) {
-        return Optional.of(dbInMemory.remove(userId));
+        return Optional.ofNullable(dbInMemory.remove(userId));
     }
 
     @Override

@@ -10,6 +10,7 @@ public class GsonProducer {
 
     private final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
+            .serializeNulls()
             .create();
 
     @Produces
