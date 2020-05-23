@@ -1,4 +1,4 @@
-package com.matteoveroni.simplerestapi.core.repositories;
+package com.matteoveroni.simplerestapi.producers;
 
 import java.security.SecureRandom;
 import javax.enterprise.context.ApplicationScoped;
