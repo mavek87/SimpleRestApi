@@ -1,9 +1,9 @@
 package com.matteoveroni.simplerestapi.router;
 
-import com.matteoveroni.simplerestapi.openapi.OpenApiJwtResource;
-import com.matteoveroni.simplerestapi.resources.RootResource;
-import com.matteoveroni.simplerestapi.resources.HelloResource;
-import com.matteoveroni.simplerestapi.resources.UsersResource;
+import com.matteoveroni.simplerestapi.rest.resources.openapi.OpenApiJwtResource;
+import com.matteoveroni.simplerestapi.rest.resources.RootResource;
+import com.matteoveroni.simplerestapi.rest.resources.HelloResource;
+import com.matteoveroni.simplerestapi.rest.resources.UsersResource;
 import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.plugin.openapi.OpenApiPlugin;
 import javax.enterprise.context.ApplicationScoped;
@@ -23,7 +23,6 @@ public class Router implements EndpointGroup {
     public static final String API_RESOURCE_USERS = API + "/users";
 
     private final OpenApiPlugin openApiPlugin;
-
     private final HelloResource helloHandler;
     private final UsersResource userHandler;
 

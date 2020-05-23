@@ -6,7 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
 @ApplicationScoped
-public class GsonProducer {
+public class GsonProducers {
 
     private final Gson gson = new GsonBuilder()
             .setPrettyPrinting()

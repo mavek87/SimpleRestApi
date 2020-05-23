@@ -1,4 +1,4 @@
-package com.matteoveroni.simplerestapi.resources;
+package com.matteoveroni.simplerestapi.rest.resources;
 
 import io.javalin.http.Context;
 import io.javalin.http.Handler;

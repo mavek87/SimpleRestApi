@@ -1,4 +1,4 @@
-package com.matteoveroni.simplerestapi.resources;
+package com.matteoveroni.simplerestapi.rest.resources;
 
 import com.matteoveroni.simplerestapi.router.Router;
 import io.javalin.http.Context;

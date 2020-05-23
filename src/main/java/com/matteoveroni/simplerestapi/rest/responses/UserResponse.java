@@ -1,4 +1,4 @@
-package com.matteoveroni.simplerestapi.responses;
+package com.matteoveroni.simplerestapi.rest.responses;
 
 import com.google.gson.annotations.SerializedName;
 import com.matteoveroni.simplerestapi.core.dto.User;

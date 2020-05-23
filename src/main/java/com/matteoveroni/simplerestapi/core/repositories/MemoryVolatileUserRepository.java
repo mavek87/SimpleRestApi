@@ -24,7 +24,8 @@ public class MemoryVolatileUserRepository implements UserRepository {
     @Override
     public User createUser(User user) {
         User newUser = new User(UUID.randomUUID(), user.getName(), user.getAge());
-        return dbInMemory.put(newUser.getId(), newUser);
+        dbInMemory.put(newUser.getId(), newUser);
+        return newUser;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class MemoryVolatileUserRepository implements UserRepository {
         if (id == null) {
             return Optional.empty();
         } else {
-            return Optional.ofNullable(dbInMemory.put(user.getId(), user));
+            return Optional.ofNullable(dbInMemory.replace(user.getId(), user));
         }
     }
 }

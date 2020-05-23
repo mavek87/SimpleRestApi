@@ -1,17 +1,18 @@
-package com.matteoveroni.simplerestapi.resources;
+package com.matteoveroni.simplerestapi.rest.resources;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.matteoveroni.simplerestapi.core.dto.User;
 import com.matteoveroni.simplerestapi.core.repositories.UserRepository;
+import com.matteoveroni.simplerestapi.rest.responses.UserResponse;
+import com.matteoveroni.simplerestapi.rest.responses.UsersResponse;
 import com.matteoveroni.simplerestapi.core.services.FakeUserGeneratorService;
-import com.matteoveroni.simplerestapi.responses.UserResponse;
-import com.matteoveroni.simplerestapi.responses.UsersResponse;
+import com.matteoveroni.simplerestapi.utils.JsonUtils;
 import io.javalin.apibuilder.CrudHandler;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
-import io.javalin.plugin.openapi.annotations.HttpMethod;
-import io.javalin.plugin.openapi.annotations.OpenApi;
-import io.javalin.plugin.openapi.annotations.OpenApiContent;
-import io.javalin.plugin.openapi.annotations.OpenApiResponse;
+import io.javalin.http.NotFoundResponse;
+import io.javalin.plugin.openapi.annotations.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,11 +22,15 @@ public class UsersResource implements CrudHandler {
 
     private final UserRepository userRepository;
     private final FakeUserGeneratorService userGeneratorService;
+    private Gson gson;
+    private JsonUtils jsonUtils;
 
     @Inject
-    public UsersResource(UserRepository userRepository, FakeUserGeneratorService userGeneratorService) {
+    public UsersResource(UserRepository userRepository, FakeUserGeneratorService userGeneratorService, Gson gson, JsonUtils jsonUtils) {
         this.userRepository = userRepository;
         this.userGeneratorService = userGeneratorService;
+        this.gson = gson;
+        this.jsonUtils = jsonUtils;
     }
 
     @Override
@@ -43,9 +48,9 @@ public class UsersResource implements CrudHandler {
                     )
             }
     )
-    public void getAll(Context context) {
+    public void getAll(Context ctx) {
         List<User> users = userRepository.getUsers();
-        context.json(new UsersResponse(users));
+        ctx.json(new UsersResponse(users));
     }
 
     @Override
@@ -63,14 +68,14 @@ public class UsersResource implements CrudHandler {
                     )
             }
     )
-    public void getOne(Context context, String userId) {
+    public void getOne(Context ctx, String userId) {
         try {
             UUID id = UUID.fromString(userId);
             Optional<User> user = userRepository.getUserById(id);
             if (user.isPresent()) {
-                context.json(new UserResponse(user.get()));
+                ctx.json(new UserResponse(user.get()));
             } else {
-                context.json(new UserResponse(null));
+                ctx.json(new UserResponse(null));
             }
         } catch (IllegalArgumentException ex) {
             throw new BadRequestResponse("Bad request " + ex.getLocalizedMessage());
@@ -84,6 +89,11 @@ public class UsersResource implements CrudHandler {
             summary = "Create user",
             description = "Create a new user",
             tags = {"user"},
+            requestBody = @OpenApiRequestBody(
+                    content = {
+                            @OpenApiContent(type = "application/json", from = User.class)
+                    }
+            ),
             responses = {
                     @OpenApiResponse(
                             status = "200",
@@ -92,10 +102,21 @@ public class UsersResource implements CrudHandler {
                     )
             }
     )
-    public void create(Context context) {
-        User newUser = userGeneratorService.generateUser();
-        userRepository.createUser(newUser);
-        context.json(new UserResponse(newUser));
+    public void create(Context ctx) {
+        try {
+            String jsonBodyData = ctx.body();
+            if (!jsonUtils.isValid(jsonBodyData)) {
+                throw new IllegalArgumentException("Invalid json");
+            }
+
+            User user = gson.fromJson(jsonBodyData, User.class);
+
+            User createdUser = userRepository.createUser(user);
+
+            ctx.json(new UserResponse(createdUser));
+        } catch (JsonSyntaxException | IllegalArgumentException ex) {
+            throw new BadRequestResponse("Bad request. " + ex.getLocalizedMessage());
+        }
     }
 
     @Override
@@ -113,14 +134,14 @@ public class UsersResource implements CrudHandler {
                     )
             }
     )
-    public void delete(Context context, String userId) {
+    public void delete(Context ctx, String userId) {
         try {
             UUID id = UUID.fromString(userId);
             Optional<User> removedUser = userRepository.deleteUser(id);
             if (removedUser.isPresent()) {
-                context.json(new UserResponse(removedUser.get()));
+                ctx.json(new UserResponse(removedUser.get()));
             } else {
-                context.json(new UserResponse(null));
+                ctx.json(new UserResponse(null));
             }
         } catch (IllegalArgumentException ex) {
             throw new BadRequestResponse("Bad request " + ex.getLocalizedMessage());
@@ -134,6 +155,11 @@ public class UsersResource implements CrudHandler {
             summary = "Update user",
             description = "Update a user",
             tags = {"user"},
+            requestBody = @OpenApiRequestBody(
+                    content = {
+                            @OpenApiContent(type = "application/json", from = User.class)
+                    }
+            ),
             responses = {
                     @OpenApiResponse(
                             status = "200",
@@ -142,7 +168,26 @@ public class UsersResource implements CrudHandler {
                     )
             }
     )
-    public void update(Context context, String userId) {
+    public void update(Context ctx, String userId) {
+        try {
+            UUID id = UUID.fromString(userId);
 
+            String jsonBodyData = ctx.body();
+            if (!jsonUtils.isValid(jsonBodyData)) {
+                throw new IllegalArgumentException("Invalid json");
+            }
+
+            User user = gson.fromJson(jsonBodyData, User.class);
+            user.setId(id);
+
+            Optional<User> updatedUser = userRepository.updateUser(user);
+            if (updatedUser.isPresent()) {
+                ctx.json(new UserResponse(updatedUser.get()));
+            } else {
+                throw new NotFoundResponse("Id not found");
+            }
+        } catch (JsonSyntaxException | IllegalArgumentException ex) {
+            throw new BadRequestResponse("Bad request. " + ex.getLocalizedMessage());
+        }
     }
 }

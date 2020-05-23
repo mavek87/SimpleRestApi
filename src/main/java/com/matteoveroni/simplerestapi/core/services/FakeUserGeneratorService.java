@@ -2,7 +2,6 @@ package com.matteoveroni.simplerestapi.core.services;
 
 import com.matteoveroni.simplerestapi.core.dto.User;
 import java.security.SecureRandom;
-import java.util.Random;
 import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
