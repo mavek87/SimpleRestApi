@@ -1,9 +1,9 @@
 package com.matteoveroni.simplerestapi.router;
 
-import com.matteoveroni.simplerestapi.rest.resources.openapi.OpenApiJwtResource;
-import com.matteoveroni.simplerestapi.rest.resources.RootResource;
 import com.matteoveroni.simplerestapi.rest.resources.HelloResource;
+import com.matteoveroni.simplerestapi.rest.resources.RootResource;
 import com.matteoveroni.simplerestapi.rest.resources.UsersResource;
+import com.matteoveroni.simplerestapi.rest.resources.openapi.OpenApiJwtResource;
 import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.plugin.openapi.OpenApiPlugin;
 import javax.enterprise.context.ApplicationScoped;
