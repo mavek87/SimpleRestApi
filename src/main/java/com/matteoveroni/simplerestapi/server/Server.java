@@ -39,7 +39,7 @@ public class Server {
     }
 
     public void onEvent(@Observes EventStartServer event) {
-        LOG.debug("Server start event received");
+        LOG.debug("Event start server received");
         startServer(configFile.getServerPort());
     }
 
