@@ -84,7 +84,3 @@ build.mustRunAfter clean
 
 shadowJar.dependsOn copyConfToLib
 shadowJar.finalizedBy packageDistribution
-
-shadowJar {
-    archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}.${archiveExtension.get()}"
-}
