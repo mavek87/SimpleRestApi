@@ -55,7 +55,36 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
+jar {
+    manifest.attributes(
+            'Implementation-Title': 'Simple Rest API',
+            'Specification-Version': project.version.replace('-SNAPSHOT', ''),
+            'Implementation-Version': project.version,
+            'Main-Class': 'com.matteoveroni.simplerestapi.App'
+    )
+}
+
 shadowJar {
     archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}.${archiveExtension.get()}"
-//    archiveClassifier = null
+}
+
+task copyConfToLib(type: Copy) {
+    from "${projectDir}/conf"
+    into "${libsDirectory.get()}/conf"
+}
+
+task packageDistribution(type: Zip) {
+    archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}.zip"
+    destinationDirectory = file(distsDirectory.get())
+    from libsDirectory.get()
+}
+
+clean.mustRunAfter wrapper
+build.mustRunAfter clean
+
+shadowJar.dependsOn copyConfToLib
+shadowJar.finalizedBy packageDistribution
+
+shadowJar {
+    archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}.${archiveExtension.get()}"
 }
