@@ -22,25 +22,27 @@ public class Router implements EndpointGroup {
     public static final String API_RESOURCE_HELLO = API + "/hello";
     public static final String API_RESOURCE_USERS = API + "/users";
 
-    private final OpenApiPlugin openApiPlugin;
-    private final HelloResource helloHandler;
-    private final UsersResource userHandler;
+    private final OpenApiJwtResource openApiJwtResource;
+    private final RootResource rootResource;
+    private final HelloResource helloResource;
+    private final UsersResource userResource;
 
     @Inject
-    public Router(OpenApiPlugin openApiPlugin, HelloResource helloHandler, UsersResource userHandler) {
-        this.openApiPlugin = openApiPlugin;
-        this.helloHandler = helloHandler;
-        this.userHandler = userHandler;
+    public Router(OpenApiJwtResource openApiJwtResource, RootResource rootResource, HelloResource helloResource, UsersResource userResource) {
+        this.openApiJwtResource = openApiJwtResource;
+        this.rootResource = rootResource;
+        this.helloResource = helloResource;
+        this.userResource = userResource;
     }
 
     @Override
     public void addEndpoints() {
-        after(OPENAPI, new OpenApiJwtResource(openApiPlugin));
+        after(OPENAPI, openApiJwtResource);
 
-        get(ROOT, new RootResource());
+        get(ROOT, rootResource);
 
-        get(API_RESOURCE_HELLO, helloHandler);
+        get(API_RESOURCE_HELLO, helloResource);
 
-        crud(API_RESOURCE_USERS + "/:user-id", userHandler);
+        crud(API_RESOURCE_USERS + "/:user-id", userResource);
     }
 }
