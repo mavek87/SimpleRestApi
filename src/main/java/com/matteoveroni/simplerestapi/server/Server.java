@@ -5,6 +5,7 @@ import com.matteoveroni.simplerestapi.configurations.ConfigFile;
 import com.matteoveroni.simplerestapi.events.EventStartServer;
 import com.matteoveroni.simplerestapi.router.Router;
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
 import io.javalin.http.util.RedirectToLowercasePathPlugin;
 import io.javalin.plugin.json.JavalinJson;
 import io.javalin.plugin.openapi.OpenApiPlugin;
@@ -31,8 +32,10 @@ public class Server {
 
         this.javalin = Javalin
                 .create(config -> {
+                    config.enableCorsForAllOrigins();
                     config.registerPlugin(new RedirectToLowercasePathPlugin());
                     config.registerPlugin(openApiPlugin);
+                    config.addStaticFiles(configFile.getPublicWebsiteFolder(), Location.EXTERNAL);
                     config.defaultContentType = "application/json";
                 })
                 .routes(router);

@@ -1,3 +1,4 @@
 {
-  "server_port": 8899
+  "server_port": 8899,
+  "public_website_folder": "/var/www/simple-rest-api-ui/"
 }
